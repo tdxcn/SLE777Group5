@@ -4,6 +4,20 @@ author: "tdxcn"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+Download raw data
+```{r}
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/gene_expression.tsv",destfile="gene_expression.tsv")
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth_data.csv",destfile="growth_data.csv")
+```
+Import raw data sets
+```{r}
+growtn_data <- read.csv("growth_data.csv",header=TRUE)
+str(head("growth_data"))
+
+gene_expression <- read_tsv("gene_expression.tsv")
+str(head(gene_expression))
+```
+
 
 
 
