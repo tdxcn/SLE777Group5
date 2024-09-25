@@ -19,7 +19,9 @@ str(head(gene_expression))
 ```
 Replacing row names in gene_expression with GeneID
 ```{r}
-rownames(gene_expression) <- gene_expression$Name_Description
+GeneID <- gene_expression$Name_Description
+rownames(gene_expression) <- GeneID  
+remove(gene_expression$Name_Description)
 ```
 
 
