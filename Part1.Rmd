@@ -11,11 +11,15 @@ download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth
 ```
 Import raw data sets
 ```{r}
-growtn_data <- read.csv("growth_data.csv",sep=",", header = TRUE)
-str(head("growth_data"))
+growth_data <- read.csv("growth_data.csv",sep=",", header = TRUE)
+str(head(growth_data))
 
 gene_expression <- read.delim("gene_expression.tsv",header=TRUE)
 str(head(gene_expression))
+```
+Replacing row names in gene_expression with GeneID
+```{r}
+rownames(gene_expression) <- gene_expression$Name_Description
 ```
 
 
