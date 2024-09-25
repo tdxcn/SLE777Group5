@@ -19,9 +19,13 @@ str(head(gene_expression))
 ```
 Replacing row names in gene_expression with GeneID
 ```{r}
-GeneID <- gene_expression$Name_Description
-rownames(gene_expression) <- GeneID  
-remove(gene_expression$Name_Description)
+rownames(gene_expression) <- gene_expression$Name_Description
+gene_expression$Name_Description <- NULL
+```
+Creating row means column
+```{r}
+gene_expression$Mean_counts <- rowMeans(gene_expression)
+gene_expression$Mean_counts <- round(gene_expression$Mean_counts, digits=2)
 ```
 
 
