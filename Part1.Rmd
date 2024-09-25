@@ -27,6 +27,10 @@ Creating row means column
 gene_expression$Mean_counts <- rowMeans(gene_expression)
 gene_expression$Mean_counts <- round(gene_expression$Mean_counts, digits=2)
 ```
+List the 10 genes with the highest mean expression
+```{r}
+tail(gene_expression[order(gene_expression$Mean_counts),],10)
+```
 
 
 
