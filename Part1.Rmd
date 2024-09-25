@@ -29,7 +29,12 @@ gene_expression$Mean_counts <- round(gene_expression$Mean_counts, digits=2)
 ```
 List the 10 genes with the highest mean expression
 ```{r}
-tail(gene_expression[order(gene_expression$Mean_counts),],10)
+gene_expression <- gene_expression[order(gene_expression$Mean_counts,decreasing = TRUE),]
+head(gene_expression,10,drop=FALSE)
+```
+Making a histogram of means
+```{r}
+hist(gene_expression$Mean_counts)
 ```
 
 
