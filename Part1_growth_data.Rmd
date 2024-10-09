@@ -1,0 +1,33 @@
+---
+title: "Part1_growth_data"
+author: "tdxcn"
+date: "2024-10-09"
+output: html_document
+---
+Download the file 
+```{r}
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth_data.csv",destfile="growth_data.csv")
+```
+
+Column name in growth_data
+```{r}
+colnames(growth_data)
+```
+Calculating row means and standard deviation
+```{r}
+growth_data$Mean_growth <- rowMeans(growth_data[,3:6])
+growth_data$Standard_deviation <- apply(growth_data[,3:6], 1, sd, na.rm = TRUE)
+growth_data$Standard_deviation <- round(growth_data$Standard_deviation, digits=2)
+```
+
+Grouping data by Site
+```{r}
+growth_data <- subset(growth_data[grouping(growth_data$Site == "northeast"),]) 
+```
+
+Box plot of tree circumference at the start and end of the study at both sites
+```{r}
+boxplot(growth_data[,3:6], xlab = "Year", ylab = "Growth", main="Tree circumference at the start and end of the study at both sites")
+```
+
+ 
