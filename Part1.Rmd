@@ -22,19 +22,30 @@ Replacing row names in gene_expression with GeneID
 rownames(gene_expression) <- gene_expression$Name_Description
 gene_expression$Name_Description <- NULL
 ```
-Creating row means column
+Creating row means column and show a table of values for the first six genes
 ```{r}
 gene_expression$Mean_counts <- rowMeans(gene_expression)
 gene_expression$Mean_counts <- round(gene_expression$Mean_counts, digits=2)
+head(gene_expression,6)
 ```
 List the 10 genes with the highest mean expression
 ```{r}
 gene_expression <- gene_expression[order(gene_expression$Mean_counts,decreasing = TRUE),]
 head(gene_expression,10,drop=FALSE)
 ```
+Determine the number of genes with a mean <10
+```{r}
+sum(gene_expression$Mean_counts < 10)
+```
 Making a histogram of means
 ```{r}
-hist(gene_expression$Mean_counts)
+hist(gene_expression$Mean_counts,
+     breaks = 30,  
+     col = "blue",
+     border = "black",
+     main = "Histogram of Mean Expression Values",
+     xlab = "Mean Expression",
+     ylab = "Frequency")
 ```
 
 
