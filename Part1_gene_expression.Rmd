@@ -7,7 +7,6 @@ output: html_document
 Download raw data
 ```{r}
 download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/gene_expression.tsv",destfile="gene_expression.tsv")
-download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth_data.csv",destfile="growth_data.csv")
 ```
 Import raw data sets
 ```{r}
