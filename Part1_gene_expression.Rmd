@@ -48,6 +48,6 @@ hist(gene_expression$Mean_counts,
      ylab = "Frequency")
 ```
 
-
+ 
 
 
