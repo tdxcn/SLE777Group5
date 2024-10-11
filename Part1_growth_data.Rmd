@@ -29,5 +29,20 @@ Box plot of tree circumference at the start and end of the study at both sites
 ```{r}
 boxplot(growth_data[,3:6], xlab = "Year", ylab = "Growth", main="Tree circumference at the start and end of the study at both sites")
 ```
+Creating subsets for data of trees grown in southwest and northeast
+```{r}
+southwest_data <- growth_data[growth_data$Site == "southwest",]
+northeast_data <- growth_data[growth_data$Site == "northeast",]
+```
 
- 
+Mean growth of each tree at each site has already been integrated into the table 
+
+t.test to estimate the p-value that the 10 year growth is different at the two sites
+H0: there is no significant difference between the mean growth over the years at each site 
+H1: there is a significant difference between the mean growth over the years at each site 
+```{r}
+t_test_result <- t.test(southwest_data$Mean_growth,northeast_data$Mean_growth)
+```
+The t.test results in a p-value of 0.0389 , which is substantially smaller than the 0.05 level of significance.
+Therefore, the hypothesis H1 is accepted
+Thus, there is a significant difference in the mean growth of trees at each site over the years 
