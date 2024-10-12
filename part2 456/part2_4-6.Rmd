@@ -46,6 +46,5 @@ uco(cds_aceti[[2]],index="rscu")
 uco(cds_ecoli[[2]],index="rscu")
 uco(cds_aceti[[2]],index="rscu",as.data.frame=TRUE)
 uco(cds_ecoli[[2]],index="rscu",as.data.frame=TRUE)
-
 ```
-
+k-mer
