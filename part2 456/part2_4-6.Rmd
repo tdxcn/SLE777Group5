@@ -15,7 +15,7 @@ URL_aceti="https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/ba
 download.file(URL_aceti,destfile="aceti_cds.fa.gz") #using the command to download the aceti raw data
 gunzip("aceti_cds.fa.gz") #unzip the file
 ```
-#sequence analysis for part2 4
+part2 4 sequence analysis
 ```{r}
 library("seqinr") #get the library for code to run
 cds_ecoli <- seqinr::read.fasta("ecoli_cds.fa") #analysis the ecoli sequence
@@ -42,7 +42,7 @@ boxplot(len_ecoli,ylab="sequence length ecoli(bp)")
 #show the result by figure
 ```
 #conclusion of part2Question4：we can see that the acetobacter Aceti sequence is much smaller than the E. coli sequence but mostly in 2000-4000, but acetobacter Aceti exist some in 8000 and the E. coli only have in 6000. 
-#codon usage, use the code to uncode the codon and show the frequency for part4 5
+part2 5 codon usage and the frequency
 ```{r}
 uco(cds_aceti[[2]])
 uco(cds_ecoli[[2]])
@@ -52,7 +52,7 @@ uco(cds_aceti[[2]],index="rscu",as.data.frame=TRUE)
 uco(cds_ecoli[[2]],index="rscu",as.data.frame=TRUE)
 ```
 #conclusion of part2Question5：The E. coli use more Coden, but the frequency does not show much difference, which means E. coli may express more complex protein. 
-#k-mer for part4 6
+part2 6 k-mer analysis
 ```{r}
 translate(cds_aceti[[1]]) #frist translate and get the prot to analysis
 prot_aceti <- lapply(cds_aceti, translate) 
@@ -83,7 +83,6 @@ head(myfreq_ecoli)
 #show the result with the frequency
 ```
 #conclusion of part2Question6：Two the most used are the same and have very relative frequency, the organisms share a set of codons, so there will be some similarities in the sequences of some of their genes. 
-
 
 
 
