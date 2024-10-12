@@ -1,0 +1,97 @@
+---
+title: "SLE777_Assignment4"
+author: "Chinenye-bot"
+date: "`r Sys.Date()`"
+output: html_document
+---
+Download raw data
+```{r}
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/gene_expression.tsv",destfile="gene_expression.tsv")
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth_data.csv",destfile="growth_data.csv")
+```
+Import raw data sets
+```{r}
+growth_data <- read.csv("growth_data.csv",sep=",", header = TRUE)
+str(head(growth_data))
+
+gene_expression <- read.delim("gene_expression.tsv",header=TRUE)
+str(head(gene_expression))
+```
+Replacing row names in gene_expression with GeneID
+```{r}
+rownames(gene_expression) <- gene_expression$Name_Description
+gene_expression$Name_Description <- NULL
+```
+Creating row means column
+```{r}
+gene_expression$Mean_counts <- rowMeans(gene_expression)
+gene_expression$Mean_counts <- round(gene_expression$Mean_counts, digits=2)
+```
+Downloading the cds sequence data of both E.coli and Acetobacter aceti
+```{r, Download_seq for E.coli, Download_seq for A.aceti}
+library("R.utils")
+# E. coli CDS
+URL="http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
+download.file(URL,destfile="ecoli_cds.fa.gz")
+gunzip("ecoli_cds.fa.gz")
+list.files()
+#Acetobacter aceti CDS
+URL="https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_80_collection/acetobacter_aceti_gca_002005445/cds/Acetobacter_aceti_gca_002005445.ASM200544v1.cds.all.fa.gz"
+download.file(URL,destfile="Aaceti_cds.fa.gz")
+gunzip("Aaceti_cds.fa.gz")
+list.files()
+```
+Load the seqinr library
+```{r, load package}
+library("seqinr")
+```
+To read the uncompressed FASTA files
+```{r, Read FASTA files}
+#To read ecoli_cds 
+ecolicds <- seqinr::read.fasta("ecoli_cds.fa")
+str(head(ecolicds))
+#To read acetobacter_cds
+Aaceticds <- seqinr::read.fasta("Aaceti_cds.fa")
+str(head(Aaceticds))
+```
+
+##Basic Sequence Analysis
+To calculate the coding sequences in both organisms
+```{r, Basic Sequence Analysis}
+length(ecolicds)
+length(Aaceticds)
+```
+To calculate summary of the sequences
+```{r, summary of the sequences}
+head(summary(ecolicds))
+head(summary(Aaceticds))
+```
+To calculate total DNA
+```{r, Total DNA of Both E.coli and A.aceti}
+#Total DNA E.coli
+lenecoli <- as.numeric(summary(ecolicds)[,1])
+
+sum(lenecoli)
+#Total DNA Acetobacter aceti
+lenAaceti <- as.numeric(summary(Aaceticds)[,1])
+
+sum(lenAaceti)
+```
+To create a boxplot of gene lengths
+```{r, Boxplot of E.coli and A.aceti}
+boxplot(lenecoli,ylab="sequence length (bp)")
+boxplot(lenAaceti,ylab="sequence length (bp)")
+```
+To calculate the mean and median coding sequence length of both E.coli & A.aceti
+```{r, mean and median of E.coli and A.aceti}
+#For E.coli
+mean(lenecoli)
+median(lenecoli)
+#For A.aceti
+mean(lenAaceti)
+median(lenAaceti)
+```
+
+
+
+
