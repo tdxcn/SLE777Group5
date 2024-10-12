@@ -1,9 +1,13 @@
 ---
-title: "SLE777_Assignment4"
-author: "Chinenye-bot"
-date: "`r Sys.Date()`"
+Title: "SLE777_Assignment 4"
+Author: "Chinenye Agbodike"
+Date: "`r Sys.Date()`"
 output: html_document
 ---
+##INTRODUCTION
+
+Rmarkdown is a powerful tool for generating dynamic reports and documents in R.Working with sequence analysis in Rmarkdown is paramount in documenting the process, showcase codes used, and display results, such as sequence alignments and various statistics. This assessment primarly enhanced problem-solving abilities and R programming skills of the team using RStudio and GitHub. Two datasets, "gene_expression.tsv" and "growth_data.csv", were provided in GitHub repository. To streamline the workflow, R commands like download.file was utilized to retrieve the data directly from the repository, compared the similarites and differences between the DNA sequences of both Escherichia coli and Acetobacter aceti.
+
 Download raw data
 ```{r}
 download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/gene_expression.tsv",destfile="gene_expression.tsv")
@@ -27,21 +31,23 @@ Creating row means column
 gene_expression$Mean_counts <- rowMeans(gene_expression)
 gene_expression$Mean_counts <- round(gene_expression$Mean_counts, digits=2)
 ```
-Downloading the cds sequence data of both E.coli and Acetobacter aceti
+##Downloading the cds sequence data of both E.coli and Acetobacter aceti
+Downloaded E. coli and Acetobacter genomic sequence data this specific “Escherichia coli str. K-12 substr. MG1655 str. K12 (GCA_000005845)” and our organism of interest Acetobacter aceti (GCA_002005445) from Ensembl.
 ```{r, Download_seq for E.coli, Download_seq for A.aceti}
 library("R.utils")
-# E. coli CDS
+# Downdload for E. coli CDS
 URL="http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
 download.file(URL,destfile="ecoli_cds.fa.gz")
 gunzip("ecoli_cds.fa.gz")
 list.files()
-#Acetobacter aceti CDS
+# Download for Acetobacter aceti CDS
 URL="https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_80_collection/acetobacter_aceti_gca_002005445/cds/Acetobacter_aceti_gca_002005445.ASM200544v1.cds.all.fa.gz"
 download.file(URL,destfile="Aaceti_cds.fa.gz")
 gunzip("Aaceti_cds.fa.gz")
 list.files()
 ```
-Load the seqinr library
+##Load the seqinr library
+The library provides tools for biological sequence retrieval and analysis
 ```{r, load package}
 library("seqinr")
 ```
@@ -57,6 +63,8 @@ str(head(Aaceticds))
 
 ##Basic Sequence Analysis
 To calculate the coding sequences in both organisms
+#Written answers to question 1
+E. coli and Acetobacter aceti have distinct biological roles, reflected in their genomes, this can be seen in the number of CDS.E. coli has more coding sequences (4239) than Acetobacter aceti(3402). This difference may be attributed to the more complex metabolic capabilities of E. coli, which thrives in various environments, including the human gut, and performs more diverse biological functions. Secondly,E.coli is a model organism with a well-studied genome that is larger and contains more genes related to metabolism when compared to Acetobacter aceti, a bacterium primarily known for its role in acetic acid production.
 ```{r, Basic Sequence Analysis}
 length(ecolicds)
 length(Aaceticds)
@@ -66,7 +74,9 @@ To calculate summary of the sequences
 head(summary(ecolicds))
 head(summary(Aaceticds))
 ```
-To calculate total DNA
+#To calculate total DNA
+#Written answers to question 2
+Total Coding DNA: E. coli has significantly more coding DNA (3978528 million base pairs) compared to Acetobacter aceti (3236568 million base pairs). This difference correlates with the greater number of CDS (coding sequences) in E. coli and reflects its larger genome size and gene content.
 ```{r, Total DNA of Both E.coli and A.aceti}
 #Total DNA E.coli
 lenecoli <- as.numeric(summary(ecolicds)[,1])
@@ -78,11 +88,12 @@ lenAaceti <- as.numeric(summary(Aaceticds)[,1])
 sum(lenAaceti)
 ```
 To create a boxplot of gene lengths
+The boxplot visually represents the distribution of coding sequence lengths for both E. coli and Acetobacter aceti which indicates the interquartile range (IQR), with the median represented by the line inside the box, and outliers represented by points beyond the whiskers.
 ```{r, Boxplot of E.coli and A.aceti}
 boxplot(lenecoli,ylab="sequence length (bp)")
 boxplot(lenAaceti,ylab="sequence length (bp)")
 ```
-To calculate the mean and median coding sequence length of both E.coli & A.aceti
+To calculate the mean and median coding sequence length of both E.coli and A.aceti
 ```{r, mean and median of E.coli and A.aceti}
 #For E.coli
 mean(lenecoli)
@@ -91,7 +102,8 @@ median(lenecoli)
 mean(lenAaceti)
 median(lenAaceti)
 ```
-
+#Written answers for question 3 
+Mean and Median CDS Length showed that E. coli has both a higher mean and median coding sequence length compared to Acetobacter aceti. This suggests that E. coli tends to have longer genes on average.These differences reflect the distinct evolutionary and ecological pressures shaping the genomes of these two bacteria.
 
 
 
