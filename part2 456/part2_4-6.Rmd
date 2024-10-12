@@ -4,22 +4,22 @@ author: "Junxiang Fang"
 date: "2024-10-12"
 output: html_document
 ---
-Download the date and unzip
+#Download the date and unzip
 ```{r}
-library("R.utils")
+library("R.utils") #get the library for code to run
 URL_ecoli="http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
-download.file(URL_ecoli,destfile="ecoli_cds.fa.gz")
-gunzip("ecoli_cds.fa.gz")
+download.file(URL_ecoli,destfile="ecoli_cds.fa.gz") #using the command to download the ecoli raw data
+gunzip("ecoli_cds.fa.gz") #unzip the file
 URL_aceti="https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_80_collection/acetobacter_aceti_gca_002005445/cds/Acetobacter_aceti_gca_002005445.ASM200544v1.cds.all.fa.gz"
-download.file(URL_aceti,destfile="aceti_cds.fa.gz")
-gunzip("aceti_cds.fa.gz")
+download.file(URL_aceti,destfile="aceti_cds.fa.gz") #using the command to download the aceti raw data
+gunzip("aceti_cds.fa.gz") #unzip the file
 ```
-sequence analysis
+#sequence analysis
 ```{r}
-library("seqinr")
-cds_ecoli <- seqinr::read.fasta("ecoli_cds.fa")
+library("seqinr") #get the library for code to run
+cds_ecoli <- seqinr::read.fasta("ecoli_cds.fa") #analysis the ecoli sequence
 str(head(cds_ecoli))
-cds_aceti <- seqinr::read.fasta("aceti_cds.fa")
+cds_aceti <- seqinr::read.fasta("aceti_cds.fa") #analysis the aceti sequence
 str(head(cds_aceti))
 length(cds_aceti)
 length(cds_ecoli)
@@ -33,12 +33,14 @@ mean(len_aceti)
 mean(len_ecoli)
 median(len_aceti)
 median(len_ecoli)
+#above get the result of the sequence analysis
 hist(len_aceti,xlab="sequence length (bp)",ylab="frequency",main="histogram of coding sequence length(aceti)")
 hist(len_ecoli,xlab="sequence length (bp)",ylab="frequency",main="histogram of coding sequence length(ecoli)")
 boxplot(len_aceti,ylab="sequence length aceti(bp)")
 boxplot(len_ecoli,ylab="sequence length ecoli(bp)")
+#show the result by figure
 ```
-codon usage
+#codon usage, use the code to uncode the codon and show the frequency
 ```{r}
 uco(cds_aceti[[2]])
 uco(cds_ecoli[[2]])
@@ -47,57 +49,36 @@ uco(cds_ecoli[[2]],index="rscu")
 uco(cds_aceti[[2]],index="rscu",as.data.frame=TRUE)
 uco(cds_ecoli[[2]],index="rscu",as.data.frame=TRUE)
 ```
-k-mer
+#k-mer
 ```{r}
-translate(cds_aceti[[1]]) 
-
+translate(cds_aceti[[1]]) #frist translate and get the prot to analysis
 prot_aceti <- lapply(cds_aceti, translate) 
-
 aa <- unique(prot_aceti[[2]]) 
-
 aa <- aa[aa != "*"] 
-
 length(aa) 
-
 count(prot_aceti[[1]],wordsize=1,alphabet=aa) 
-
 count(prot_aceti[[2]],wordsize=1,alphabet=aa) 
-
 translate(cds_ecoli[[1]]) 
-
 prot_ecoli <- lapply(cds_ecoli, translate) 
-
 bb <- unique(prot_ecoli[[2]]) 
-
 bb <- bb[bb != "*"] 
-
 length(bb) 
-
 count(prot_ecoli[[1]],wordsize=1,alphabet=bb) 
-
 count(prot_ecoli[[2]],wordsize=1,alphabet=bb) 
-
 prots_aceti <- unlist(prot_aceti) 
-
 mycounts_aceti <- count(prots_aceti,wordsize=3,alphabet=aa) 
-
 str(mycounts_aceti) 
-
 head(mycounts_aceti) 
-
 myfreq_aceti <- count(prots_aceti,wordsize=3,alphabet=aa,freq=TRUE) 
-
 head(myfreq_aceti) 
-
 prots_ecoli <- unlist(prot_ecoli) 
-
 mycounts_ecoli <- count(prots_ecoli,wordsize=3,alphabet=bb) 
-
 str(mycounts_ecoli) 
-
 head(mycounts_ecoli) 
-
 myfreq_ecoli <- count(prots_ecoli,wordsize=3,alphabet=bb,freq=TRUE) 
-
 head(myfreq_ecoli) 
+#show the result with the frequency
 ```
+#Question 4：we can see that the acetobacter Aceti sequence is much smaller than the E. coli sequence but mostly in 2000-4000, but acetobacter Aceti exist some in 8000 and the E. coli only have in 6000. 
+#Question5：The E. coli use more Coden, but the frequency does not show much difference, which means E. coli may express more complex protein. 
+#Question6：Two the most used are the same and have very relative frequency, the organisms share a set of codons, so there will be some similarities in the sequences of some of their genes. 
