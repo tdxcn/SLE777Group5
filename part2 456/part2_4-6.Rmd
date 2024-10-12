@@ -48,4 +48,63 @@ uco(cds_aceti[[2]],index="rscu",as.data.frame=TRUE)
 uco(cds_ecoli[[2]],index="rscu",as.data.frame=TRUE)
 ```
 k-mer
-1
+
+```{r}
+translate(cds_aceti[[1]]) 
+
+prot_aceti <- lapply(cds_aceti, translate) 
+
+aa <- unique(prot_aceti[[2]]) 
+
+aa <- aa[aa != "*"] 
+
+length(aa) 
+
+count(prot_aceti[[1]],wordsize=1,alphabet=aa) 
+
+count(prot_aceti[[2]],wordsize=1,alphabet=aa) 
+
+  
+
+translate(cds_ecoli[[1]]) 
+
+prot_ecoli <- lapply(cds_ecoli, translate) 
+
+bb <- unique(prot_ecoli[[2]]) 
+
+bb <- bb[bb != "*"] 
+
+length(bb) 
+
+count(prot_ecoli[[1]],wordsize=1,alphabet=bb) 
+
+count(prot_ecoli[[2]],wordsize=1,alphabet=bb) 
+
+  
+
+prots_aceti <- unlist(prot_aceti) 
+
+mycounts_aceti <- count(prots_aceti,wordsize=3,alphabet=aa) 
+
+str(mycounts_aceti) 
+
+head(mycounts_aceti) 
+
+myfreq_aceti <- count(prots_aceti,wordsize=3,alphabet=aa,freq=TRUE) 
+
+head(myfreq_aceti) 
+
+  
+
+prots_ecoli <- unlist(prot_ecoli) 
+
+mycounts_ecoli <- count(prots_ecoli,wordsize=3,alphabet=bb) 
+
+str(mycounts_ecoli) 
+
+head(mycounts_ecoli) 
+
+myfreq_ecoli <- count(prots_ecoli,wordsize=3,alphabet=bb,freq=TRUE) 
+
+head(myfreq_ecoli) 
+```
