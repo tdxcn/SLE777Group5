@@ -36,10 +36,12 @@ Creating subsets for data of trees grown in southwest and northeast
 ```{r}
 southwest_data <- growth_data[growth_data$Site == "southwest",] #Making a subset of data of trees in the southwest site
 northeast_data <- growth_data[growth_data$Site == "northeast",] # Making a subset of data of trees in the northeast site
-southwest_data$Mean_growth <- NULL
-northeast_data$Mean_growth <- NULL
-southwest_data$Standard_deviation <- NULL
-northeast_data$Standard_deviation <- NULL
+southwest_data$Mean_growth <- NULL #deleting the "Mean_growth" column
+northeast_data$Mean_growth <- NULL #deleting the "Mean_growth" column
+southwest_data$Standard_deviation <- NULL #deleting the "Standard_deviation" column
+northeast_data$Standard_deviation <- NULL #deleting the "Standard_deviation" column
+rownames(southwest_data) <- c(1:nrow(southwest_data)) #Renumber the the row in "southwest_data" following the order from smallest to largest
+rownames(northeast_data) <- c(1:nrow(northeast_data)) #Renumber the the row in "northeast_data" following the order from smallest to largest
 southwest_data$Mean_growth_last_10_years <- rowMeans(southwest_data[,4:6]) #Calculating mean growth of trees in southwest site over the last years of the study 
 northeast_data$Mean_growth_last_10_years <- rowMeans(northeast_data[,4:6]) #Calculating mean growth of trees in northeast site over the last years of the study
 southwest_data$Mean_growth_last_10_years <- round(southwest_data$Mean_growth_last_10_years, digits = 2) #rounding up the mean values to 2 decimals 
