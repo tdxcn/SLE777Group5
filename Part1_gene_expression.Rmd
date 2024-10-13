@@ -36,15 +36,16 @@ sum(gene_expression$Mean_expression < 10) #Counting the number of gene with valu
 5. Making a histogram of mean values
 ```{r}
 hist(gene_expression$Mean_expression,#Making histogram plot using values in the "Mean_expression" column
-     breaks = 100, #Adjusting the number of bin in the histogram to 100  
+     breaks = 1000, #Adjusting the number of bin in the histogram to 1000  
      col = "blue",#Setting to color of columns to blue
      border = "black",#Setting the color of the borders to black
      main = "Histogram of Mean Expression Values", #Setting the name of the histogram 
      xlab = "Mean Expression", #Setting the name of x-axis 
      ylab = "Frequency", #Setting the name of y-axis
-     ylim = c(0, 60000)) #Setting the limit of y-axis to 60000
+     ylim = c(0, 60000), #Setting the limit of y-axis to 60000
+     xlim = c(0,60000)) #Setting the limit of y-axis to 60000
 ```
-From the histogram, it can be observed that a majority of genes (around 55000) showed no mean gene expression
+From the histogram, it can be observed that a majority of genes (around 46000) showed mean gene expression within the range from 0 to 10. Above the range from 0 to 10, the frequency of mean expression drasstically decrease as their value increase. 
  
 
 
