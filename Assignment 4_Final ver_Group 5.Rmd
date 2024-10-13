@@ -1,0 +1,259 @@
+---
+title: "Assigment 4, Applied Bioinformatics"
+author: "DINH XUAN CUONG TRAN, CHINENYE MARYANN, JUNXIANG FANG"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+I. Introduction
+Rmarkdown is a powerful tool for generating dynamic reports and documents in R. Working with sequence analysis in Rmarkdown is paramount in documenting the process, showcase codes used, and display results, such as sequence alignments and various statistics. This assessment primarily enhanced problem-solving abilities and R programming skills of the team using RStudio and GitHub. Two datasets, "gene_expression.tsv" and "growth_data.csv", were provided in GitHub repository. To streamline the workflow, R commands like download.file was utilized to retrieve the data directly from the repository, compared the similarities and differences between the DNA sequences of both Escherichia coli and Acetobacter aceti.
+
+II. Methodology, result and discussion
+2.1. Importing files, data wrangling, mathematical operations, plots and saving code on GitHub
+2.1.1. Gene expression
+  a. Download raw data of "gene_expression" file 
+```{r}
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/gene_expression.tsv",destfile="gene_expression.tsv") #download the "gene_expression" file from Mr.Ghazkha github
+```
+```{r}
+gene_expression <- read.delim("gene_expression.tsv",header=TRUE) #import the downloaded "gene_expression" file into the local Rstudio in form of table 
+str(head(gene_expression)) #showing the structure of data in "gene_expression"
+```
+  Making the gene identifier the row name 
+```{r}
+rownames(gene_expression) <- gene_expression$Name_Description #replacing the row names in "gene_expression" with GeneIDs
+gene_expression$Name_Description <- NULL #Delete the existing GeneID column
+```
+
+  b. Creating row means column and showing a table of values for the first six genes
+```{r}
+gene_expression$Mean_expression <- rowMeans(gene_expression) #Creating a new column named "Mean_expression" and assigning it with mean value of columns in each row 
+gene_expression$Mean_expression <- round(gene_expression$Mean_expression, digits=2) #Rounding up the value in "mean_expression" column to two decimal numbers
+head(gene_expression,6) # Printing the first 6 genes
+```
+
+  c. Listing the 10 genes with the highest mean expression
+```{r}
+gene_expression <- gene_expression[order(gene_expression$Mean_expression,decreasing = TRUE),] #Reordering the rows in "gene_expression" by the order of the values in "Mean_expression" from largest to smallest 
+head(gene_expression,10,drop=FALSE) #Printing a table of the first 10 genes with the highest mean expression
+```
+  d. The number of genes with a mean expression lower than 10
+```{r}
+sum(gene_expression$Mean_expression < 10) #Counting the number of gene with value in "Mean_expression" lower than 10
+```
+  e. Making a histogram of mean values
+```{r}
+hist(gene_expression$Mean_expression,#Making histogram plot using values in the "Mean_expression" column
+     breaks = 1000, #Adjusting the number of bin in the histogram to 1000  
+     col = "blue",#Setting to color of columns to blue
+     border = "black",#Setting the color of the borders to black
+     main = "Histogram of Mean Expression Values", #Setting the name of the histogram 
+     xlab = "Mean Expression", #Setting the name of x-axis 
+     ylab = "Frequency", #Setting the name of y-axis
+     ylim = c(0, 60000), #Setting the limit of y-axis to 60000
+     xlim = c(0,60000)) #Setting the limit of y-axis to 60000
+```
+
+2.1.2. Growth data
+a. Download and import the "growth_data" file
+```{r}
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth_data.csv",destfile="growth_data.csv") #download the "growth_data" file from Mr.Ghazkha github
+growth_data <- read.csv("growth_data.csv",sep=",", header = TRUE) #import the downloaded "growth_data" file into the local Rstudio as a csv file
+str(head(growth_data)) #showing the structure of data in "growth_data"
+```
+
+  Showing column name of "growth_data" file
+```{r}
+colnames(growth_data) #Presenting the column names
+```
+b. Calculating row means and standard deviation
+```{r}
+growth_data$Mean_growth <- rowMeans(growth_data[,3:6]) #Creating a "Mean_growth" column in "growth_data" and assigning it with mean values of columns in each row  
+growth_data$Standard_deviation <- apply(growth_data[,3:6], 1, sd, na.rm = TRUE) #Creating a "Standard_deviation" column in "growth_data" and assigning it with standard deviation values of columns in each row  
+growth_data$Standard_deviation <- round(growth_data$Standard_deviation, digits=2) #Rounding up the values in "Standard deviation" to 2 decimals 
+```
+
+  Grouping data by Site
+```{r}
+growth_data <- subset(growth_data[grouping(growth_data$Site == "northeast"),]) #Grouping the values rows in "growth_data" into two sections, one has "southwest" Site and the other has "northeast" Site
+```
+  
+  c. Box plot of tree circumference at the start and end of the study at both sites
+```{r}
+boxplot(growth_data[,3:6], xlab = "Year", ylab = "Growth", main="Tree circumference at the start and end of the study", ylmit = 200) #Making a box plot of the circumference at the beginning and the end of the study at both site
+```
+
+  d. Mean growth over the last 10 years at each site 
+Creating subsets for data of trees grown in southwest and northeast
+```{r}
+southwest_data <- growth_data[growth_data$Site == "southwest",] #Making a subset of data of trees in the southwest site
+northeast_data <- growth_data[growth_data$Site == "northeast",] # Making a subset of data of trees in the northeast site
+southwest_data$Mean_growth <- NULL #deleting the "Mean_growth" column
+northeast_data$Mean_growth <- NULL #deleting the "Mean_growth" column
+southwest_data$Standard_deviation <- NULL #deleting the "Standard_deviation" column
+northeast_data$Standard_deviation <- NULL #deleting the "Standard_deviation" column
+rownames(southwest_data) <- c(1:nrow(southwest_data)) #Renumber the the row in "southwest_data" following the order from smallest to largest
+rownames(northeast_data) <- c(1:nrow(northeast_data)) #Renumber the the row in "northeast_data" following the order from smallest to largest
+southwest_data$Mean_growth_last_10_years <- rowMeans(southwest_data[,4:6]) #Calculating mean growth of trees in southwest site over the last years of the study 
+northeast_data$Mean_growth_last_10_years <- rowMeans(northeast_data[,4:6]) #Calculating mean growth of trees in northeast site over the last years of the study
+southwest_data$Mean_growth_last_10_years <- round(southwest_data$Mean_growth_last_10_years, digits = 2) #rounding up the mean values to 2 decimals 
+northeast_data$Mean_growth_last_10_years <- round(northeast_data$Mean_growth_last_10_years, digits = 2) #rounding up the mean values to 2 decimals 
+```
+
+  e. t test of the mean growth value over the last 10 year at the two sites
+H0: there is no significant difference between the mean growth over the last 10 years of the study at each site
+H1: there is a significant difference between the mean growth over the last 10 years of the study at each site 
+```{r}
+t_test_result <- t.test(southwest_data$Mean_growth_last_10_years,northeast_data$Mean_growth_last_10_years) #Performing t test on the mean growth value of two sites
+```
+The t.test results in a p-value of 0.042 , which is smaller than the 0.05 level of significance.
+Therefore, the hypothesis H1 is accepted.
+Thus, there is a significant difference in the mean growth of trees at each site over the last 10 years of the study. 
+
+
+2.2. Examining biological sequence diversity
+2.2.1. Downloading the cds sequence data of both E.coli and Acetobacter aceti
+  a. Download E. coli and Acetobacter genomic sequence data from Ensembl.
+```{r, Download_seq for E.coli, Download_seq for A.aceti}
+library("R.utils")
+# Downdload for E. coli CDS
+URL="http://ftp.ensemblgenomes.org/pub/bacteria/release-53/fasta/bacteria_0_collection/escherichia_coli_str_k_12_substr_mg1655_gca_000005845/cds/Escherichia_coli_str_k_12_substr_mg1655_gca_000005845.ASM584v2.cds.all.fa.gz"
+download.file(URL,destfile="ecoli_cds.fa.gz")
+gunzip("ecoli_cds.fa.gz")
+list.files()
+# Download for Acetobacter aceti CDS
+URL="https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-59/fasta/bacteria_80_collection/acetobacter_aceti_gca_002005445/cds/Acetobacter_aceti_gca_002005445.ASM200544v1.cds.all.fa.gz"
+download.file(URL,destfile="aceti_cds.fa.gz")
+gunzip("aceti_cds.fa.gz")
+list.files()
+```
+The library provides tools for biological sequence retrieval and analysis
+```{r, load package}
+library("seqinr") #Load the seqinr library
+```
+  b. Reading the uncompressed FASTA files
+```{r, Read FASTA files}
+#To read ecoli_cds 
+ecolicds <- seqinr::read.fasta("ecoli_cds.fa")
+str(head(ecolicds))
+#To read acetobacter_cds
+aceticds <- seqinr::read.fasta("aceti_cds.fa")
+str(head(aceticds))
+```
+
+  c. Basic Sequence Analysis
+```{r, Basic Sequence Analysis}
+length(ecolicds)
+length(Aaceticds)
+```
+To calculate summary of the sequences
+```{r, summary of the sequences}
+head(summary(ecolicds))
+head(summary(aceticds))
+```
+E. coli and Acetobacter aceti have distinct biological roles, reflected in their genomes, this can be seen in the number of CDS.E. coli has more coding sequences (4239) than Acetobacter aceti(3402). This difference may be attributed to the more complex metabolic capabilities of E. coli, which thrives in various environments, including the human gut, and performs more diverse biological functions. Secondly, E.coli is a model organism with a well-studied genome that is larger and contains more genes related to metabolism when compared to Acetobacter aceti, a bacterium primarily known for its role in acetic acid production.
+
+2.2.2. Total DNA coding 
+  a. Calculating total DNA
+```{r, Total DNA of Both E.coli and A.aceti}
+#Total DNA E.coli
+lenecoli <- as.numeric(summary(ecolicds)[,1])
+
+sum(lenecoli)
+#Total DNA Acetobacter aceti
+lenaceti <- as.numeric(summary(aceticds)[,1])
+
+sum(lenaceti)
+```
+Total Coding DNA: E. coli has significantly more coding DNA (3978528 base pairs) compared to Acetobacter aceti (3236568 base pairs). This difference correlates with the greater number of CDS (coding sequences) in E. coli and reflects its larger genome size and gene content.
+
+2.2.3. Boxplot of gene lengths of two organisms 
+The boxplot visually represents the distribution of coding sequence lengths for both E. coli and Acetobacter aceti which indicates the interquartile range (IQR), with the median represented by the line inside the box, and outliers represented by points beyond the whiskers.
+```{r, Boxplot of E.coli and A.aceti}
+boxplot(lenecoli,ylab="sequence length (bp)")
+boxplot(lenaceti,ylab="sequence length (bp)")
+```
+Mean and median coding sequence length of both E.coli and A.aceti
+```{r, mean and median of E.coli and A.aceti}
+#For E.coli
+mean(lenecoli)
+median(lenecoli)
+#For aceti
+mean(lenaceti)
+median(lenaceti)
+```
+Mean and Median CDS Length showed that E. coli has both a higher mean and median coding sequence length compared to Acetobacter aceti. This suggests that E. coli tends to have longer genes on average. These differences reflect the distinct evolutionary and ecological pressures shaping the genomes of these two bacteria.
+
+2.2.4. Frequency of DNA bases in the total coding sequences and total protein sequence
+```{r}
+library("seqinr") #get the library for code to run
+cds_ecoli <- seqinr::read.fasta("ecoli_cds.fa") #analysis the ecoli sequence
+str(head(cds_ecoli))
+cds_aceti <- seqinr::read.fasta("aceti_cds.fa") #analysis the aceti sequence
+str(head(cds_aceti))
+length(cds_aceti)
+length(cds_ecoli)
+head(summary(cds_aceti))
+head(summary(cds_ecoli))
+len_aceti <- as.numeric(summary(cds_aceti)[,1])
+sum(len_aceti)
+len_ecoli <- as.numeric(summary(cds_ecoli)[,1])
+sum(len_ecoli)
+mean(len_aceti)
+mean(len_ecoli)
+median(len_aceti)
+median(len_ecoli)
+#above get the result of the sequence analysis
+hist(len_aceti,xlab="sequence length (bp)",ylab="frequency",main="histogram of coding sequence length(aceti)")
+hist(len_ecoli,xlab="sequence length (bp)",ylab="frequency",main="histogram of coding sequence length(ecoli)")
+boxplot(len_aceti,ylab="sequence length aceti(bp)", main="Box plot of sequence length of Aceti")
+boxplot(len_ecoli,ylab="sequence length ecoli(bp)", main="Box plot of sequence length of E.Coli")
+#show the result by figure
+```
+We can see that the acetobacter Aceti sequence is much smaller than the E. coli sequence but mostly in 2000-4000, but acetobacter Aceti exist some in 8000 and the E. coli only have in 6000.
+
+2.2.5. Codon usage table and codon usage bias
+```{r}
+uco(cds_aceti[[2]])
+uco(cds_ecoli[[2]])
+uco(cds_aceti[[2]],index="rscu")
+uco(cds_ecoli[[2]],index="rscu")
+uco(cds_aceti[[2]],index="rscu",as.data.frame=TRUE)
+uco(cds_ecoli[[2]],index="rscu",as.data.frame=TRUE)
+```
+The E. coli use more Coden, but the frequency does not show much difference, which means E. coli may express more complex protein. 
+
+2.2.6. k-mer analysis
+```{r}
+translate(cds_aceti[[1]]) #frist translate and get the prot to analysis
+prot_aceti <- lapply(cds_aceti, translate) 
+aa <- unique(prot_aceti[[2]]) 
+aa <- aa[aa != "*"] 
+length(aa) 
+count(prot_aceti[[1]],wordsize=1,alphabet=aa) 
+count(prot_aceti[[2]],wordsize=1,alphabet=aa) 
+translate(cds_ecoli[[1]]) 
+prot_ecoli <- lapply(cds_ecoli, translate) 
+bb <- unique(prot_ecoli[[2]]) 
+bb <- bb[bb != "*"] 
+length(bb) 
+count(prot_ecoli[[1]],wordsize=1,alphabet=bb) 
+count(prot_ecoli[[2]],wordsize=1,alphabet=bb) 
+prots_aceti <- unlist(prot_aceti) 
+mycounts_aceti <- count(prots_aceti,wordsize=3,alphabet=aa) 
+str(mycounts_aceti) 
+head(mycounts_aceti) 
+myfreq_aceti <- count(prots_aceti,wordsize=3,alphabet=aa,freq=TRUE) 
+head(myfreq_aceti) 
+prots_ecoli <- unlist(prot_ecoli) 
+mycounts_ecoli <- count(prots_ecoli,wordsize=3,alphabet=bb) 
+str(mycounts_ecoli) 
+head(mycounts_ecoli) 
+myfreq_ecoli <- count(prots_ecoli,wordsize=3,alphabet=bb,freq=TRUE) 
+head(myfreq_ecoli) 
+#show the result with the frequency
+```
+Two the most used are the same and have very relative frequency, the organisms share a set of codons, so there will be some similarities in the sequences of some of their genes. 
+
+III. Summary
+In this study, R markdown was used to analyze and study the data of gene expression and growth of trees in assigned files. It was also used to analyze DNA, gene sequences, codon usage and kmers of two organisms, E.Coli and Acetobacter aceti.  
