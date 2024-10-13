@@ -4,45 +4,56 @@ author: "tdxcn"
 date: "2024-10-09"
 output: html_document
 ---
-Download the file 
+6. Download and import the "growth_data" file
 ```{r}
-download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth_data.csv",destfile="growth_data.csv")
+download.file("https://raw.githubusercontent.com/ghazkha/Assessment4/main/growth_data.csv",destfile="growth_data.csv") #download the "growth_data" file from Mr.Ghazkha github
+growth_data <- read.csv("growth_data.csv",sep=",", header = TRUE) #import the downloaded "growth_data" file into the local Rstudio as a csv file
+str(head(growth_data)) #showing the structure of data in "growth_data"
 ```
 
-Column name in growth_data
+Showing column name of "growth_data" file
 ```{r}
-colnames(growth_data)
+colnames(growth_data) #Presenting the column names
 ```
-Calculating row means and standard deviation
+7. Calculating row means and standard deviation
 ```{r}
-growth_data$Mean_growth <- rowMeans(growth_data[,3:6])
-growth_data$Standard_deviation <- apply(growth_data[,3:6], 1, sd, na.rm = TRUE)
-growth_data$Standard_deviation <- round(growth_data$Standard_deviation, digits=2)
+growth_data$Mean_growth <- rowMeans(growth_data[,3:6]) #Creating a "Mean_growth" column in "growth_data" and assigning it with mean values of columns in each row  
+growth_data$Standard_deviation <- apply(growth_data[,3:6], 1, sd, na.rm = TRUE) #Creating a "Standard_deviation" column in "growth_data" and assigning it with standard deviation values of columns in each row  
+growth_data$Standard_deviation <- round(growth_data$Standard_deviation, digits=2) #Rounding up the values in "Standard deviation" to 2 decimals 
 ```
 
 Grouping data by Site
 ```{r}
-growth_data <- subset(growth_data[grouping(growth_data$Site == "northeast"),]) 
+growth_data <- subset(growth_data[grouping(growth_data$Site == "northeast"),]) #Grouping the values rows in "growth_data" into two sections, one has "southwest" Site and the other has "northeast" Site
 ```
 
-Box plot of tree circumference at the start and end of the study at both sites
+8. Box plot of tree circumference at the start and end of the study at both sites
 ```{r}
-boxplot(growth_data[,3:6], xlab = "Year", ylab = "Growth", main="Tree circumference at the start and end of the study at both sites")
+boxplot(growth_data[,3:6], xlab = "Year", ylab = "Growth", main="Tree circumference at the start and end of the study", ylmit = 200) #Making a box plot of the circumference at the beginning and the end of the study at both site
 ```
+9. Mean growth over the last 10 years at each site 
 Creating subsets for data of trees grown in southwest and northeast
 ```{r}
-southwest_data <- growth_data[growth_data$Site == "southwest",]
-northeast_data <- growth_data[growth_data$Site == "northeast",]
+southwest_data <- growth_data[growth_data$Site == "southwest",] #Making a subset of data of trees in the southwest site
+northeast_data <- growth_data[growth_data$Site == "northeast",] # Making a subset of data of trees in the northeast site
+southwest_data$Mean_growth <- NULL #deleting the "Mean_growth" column
+northeast_data$Mean_growth <- NULL #deleting the "Mean_growth" column
+southwest_data$Standard_deviation <- NULL #deleting the "Standard_deviation" column
+northeast_data$Standard_deviation <- NULL #deleting the "Standard_deviation" column
+rownames(southwest_data) <- c(1:nrow(southwest_data)) #Renumber the the row in "southwest_data" following the order from smallest to largest
+rownames(northeast_data) <- c(1:nrow(northeast_data)) #Renumber the the row in "northeast_data" following the order from smallest to largest
+southwest_data$Mean_growth_last_10_years <- rowMeans(southwest_data[,4:6]) #Calculating mean growth of trees in southwest site over the last years of the study 
+northeast_data$Mean_growth_last_10_years <- rowMeans(northeast_data[,4:6]) #Calculating mean growth of trees in northeast site over the last years of the study
+southwest_data$Mean_growth_last_10_years <- round(southwest_data$Mean_growth_last_10_years, digits = 2) #rounding up the mean values to 2 decimals 
+northeast_data$Mean_growth_last_10_years <- round(northeast_data$Mean_growth_last_10_years, digits = 2) #rounding up the mean values to 2 decimals 
 ```
 
-Mean growth of each tree at each site has already been integrated into the table 
-
-t.test to estimate the p-value that the 10 year growth is different at the two sites
-H0: there is no significant difference between the mean growth over the years at each site 
-H1: there is a significant difference between the mean growth over the years at each site 
+10. t test of the mean growth value over the last 10 year at the two sites
+H0: there is no significant difference between the mean growth over the last 10 years of the study at each site
+H1: there is a significant difference between the mean growth over the last 10 years of the study at each site 
 ```{r}
-t_test_result <- t.test(southwest_data$Mean_growth,northeast_data$Mean_growth)
+t_test_result <- t.test(southwest_data$Mean_growth_last_10_years,northeast_data$Mean_growth_last_10_years) #Performing t test on the mean growth value of two sites
 ```
-The t.test results in a p-value of 0.0389 , which is substantially smaller than the 0.05 level of significance.
+The t.test results in a p-value of 0.042 , which is smaller than the 0.05 level of significance.
 Therefore, the hypothesis H1 is accepted
-Thus, there is a significant difference in the mean growth of trees at each site over the years 
+Thus, there is a significant difference in the mean growth of trees at each site over the last 10 years of the study 
